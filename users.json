@@ -1,0 +1,6 @@
+{
+    "aaaaaaaaa": "pbkdf2:sha256:260000$FgTi5kfeFwk5Oay3$fc78d2efa6b39fc08a459d70b46feb00492afba12d82731ba2d3740fc9fb6fce",
+    "Admin123": "pbkdf2:sha256:260000$u6Q1oyWrQlwhmj7e$bc9d0389241dbf2541e3c09a742164b23294c79eca5ac854646094b9b59cb3a9",
+    "ratna123": "pbkdf2:sha256:260000$psq6tkXyxGWeGQDr$6ba727e0c1204cb72e06061b4bfa03f58e4df7c2e08fa5acdd584f5de3c02f8f",
+    "Nirjalsir": "scrypt:32768:8:1$FwAVvDmY5FHuMdfJ$3ba02a40fa2421bc7252b73a823bef93e63ff407a524631dcb11e490484696973bfa51c9855ca8b3abf5523a1cc7170080ebc7d5766206a4b642772e7c2146a8"
+}

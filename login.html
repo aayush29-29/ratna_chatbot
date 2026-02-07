@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - Ratna Chatbot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-light d-flex flex-column justify-content-center align-items-center" style="height: 100vh; gap: 1.5rem;">
+
+  <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+    <h2 class="text-center mb-4">Login</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    <form method="POST" novalidate>
+      <div class="mb-3">
+        <input type="text" name="username" class="form-control" placeholder="Username" required />
+      </div>
+      <div class="mb-3 position-relative">
+        <input type="password" id="loginPassword" name="password" class="form-control" placeholder="Password" required />
+        <button type="button" id="toggleLoginPwd" class="btn btn-sm btn-outline-secondary" style="position:absolute; right:8px; top:50%; transform: translateY(-50%); border: none; background: transparent;" aria-label="Show password">
+          <i class="fas fa-eye" style="font-size: 1.2rem; color: #6c757d;"></i>
+        </button>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+      <div class="mt-3 text-center">
+        <a href="{{ url_for('signup') }}">Don't have an account? Sign Up</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Guest access link outside the card -->
+  <div class="text-center">
+    <a href="{{ url_for('use_guest') }}" class="btn btn-link">
+      Use Chatbot without login (Guest)
+    </a>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('toggleLoginPwd');
+      const input = document.getElementById('loginPassword');
+      if (btn && input) {
+        const icon = btn.querySelector('i');
+        btn.addEventListener('click', function(){
+          const isPwd = input.getAttribute('type') === 'password';
+          input.setAttribute('type', isPwd ? 'text' : 'password');
+          if (icon) {
+            if (isPwd) {
+              icon.classList.remove('fa-eye');
+              icon.classList.add('fa-eye-slash');
+            } else {
+              icon.classList.remove('fa-eye-slash');
+              icon.classList.add('fa-eye');
+            }
+          }
+          btn.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
