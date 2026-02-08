@@ -10,10 +10,13 @@ import re
 # Load Environment & Configure Gemini
 # ----------------------
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# Prefer os.environ so Render/env vars are definitely read (not only .env)
+_raw_key = (os.environ.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY") or "").strip()
+GEMINI_API_KEY = _raw_key
 if not GEMINI_API_KEY:
-    print("⚠️ WARNING: GEMINI_API_KEY not found in environment variables!")
+    print("⚠️ WARNING: GEMINI_API_KEY not found. Set it in Render Dashboard → Environment, then redeploy.")
 else:
+    print(f"✓ GEMINI_API_KEY loaded (length={len(GEMINI_API_KEY)}).")
     genai.configure(api_key=GEMINI_API_KEY)
 
 # ----------------------
@@ -464,6 +467,18 @@ def chatbot():
     return render_template("index.html", username=username)
 
 # ----------------------
+# Env check (for debugging Render env vars – does not expose the key)
+# ----------------------
+@app.route("/env-check")
+def env_check():
+    has_key = bool(GEMINI_API_KEY)
+    return jsonify({
+        "gemini_configured": has_key,
+        "key_length": len(GEMINI_API_KEY) if GEMINI_API_KEY else 0,
+        "hint": "Redeploy after changing Environment variables on Render."
+    })
+
+# ----------------------
 # Gemini AI Chat Endpoint
 # ----------------------
 @app.route("/get", methods=["GET"])
@@ -504,7 +519,7 @@ def get_bot_response():
 
         # Check if API key is configured
         if not GEMINI_API_KEY:
-            return jsonify({"reply": "⚠️ Error: Gemini API key is not configured. Please set GEMINI_API_KEY in your .env file."})
+            return jsonify({"reply": "⚠️ Error: Gemini API key is not configured. Set GEMINI_API_KEY in your environment (e.g. Render Dashboard → Environment)."})
 
         # Get conversation history for context and memory
         chat_history = session.get("chat_history", [])
@@ -695,7 +710,7 @@ Guidelines:
         
         # Provide more specific error messages based on error type
         if "API_KEY" in error_msg or "api key" in error_msg.lower() or isinstance(e, google_exceptions.Unauthenticated):
-            bot_reply = "⚠️ Error: Invalid or missing Gemini API key. Please check your .env file."
+            bot_reply = "⚠️ Error: Invalid or missing Gemini API key. Set GEMINI_API_KEY in Render Dashboard → Environment and redeploy."
         elif is_quota_error:
             bot_reply = "⚠️ Error: API quota exceeded or rate limit reached. Please wait a few moments and try again. If this persists, you may need to upgrade your API plan or wait for your quota to reset."
         elif "model" in error_msg.lower() or isinstance(e, google_exceptions.NotFound):
